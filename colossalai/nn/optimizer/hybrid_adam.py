@@ -1,4 +1,5 @@
 from typing import Any, Optional
+import logging
 
 import torch
 
@@ -85,9 +86,12 @@ class HybridAdam(CPUAdam):
             nvme_offload_dir,
         )
         if torch.cuda.is_available():
-            fused_optim = FusedOptimizerLoader().load()
-            self.gpu_adam_op = fused_optim.multi_tensor_adam
-            self._dummy_overflow_buf = torch.tensor([0], dtype=torch.int, device=get_current_device())
+            try:
+                fused_optim = FusedOptimizerLoader().load()
+                self.gpu_adam_op = fused_optim.multi_tensor_adam
+                self._dummy_overflow_buf = torch.tensor([0], dtype=torch.int, device=get_current_device())
+            except Exception as e:
+                logging.warning(f"Loading FusedOptimizerLoader got {e}")
 
     @torch.no_grad()
     def step(self, closure=None, div_scale: float = -1):
