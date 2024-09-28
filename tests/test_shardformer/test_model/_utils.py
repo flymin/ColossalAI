@@ -18,8 +18,8 @@ from colossalai.booster.plugin import HybridParallelPlugin, LowLevelZeroPlugin
 from colossalai.booster.plugin.hybrid_parallel_plugin import HybridParallelModule
 from colossalai.checkpoint_io.utils import gather_distributed_param
 from colossalai.lazy import LazyInitContext
-from colossalai.nn.optimizer import GaLoreAdamW8bit
-from colossalai.nn.optimizer.galore import get_galore_param_groups
+# from colossalai.nn.optimizer import GaLoreAdamW8bit
+# from colossalai.nn.optimizer.galore import get_galore_param_groups
 from colossalai.pipeline.stage_manager import PipelineStageManager
 from colossalai.shardformer import ShardConfig, ShardFormer
 from colossalai.shardformer._utils import getattr_
@@ -136,7 +136,7 @@ def build_model_from_hybrid_plugin(
     if use_lazy_init:
         ctx.materialize(org_model)
     org_model = org_model.cuda()
-    if optim_class == GaLoreAdamW8bit:
+    if False:
         # Disable clipping and block-wise quantization
         org_optimizer = optim_class(
             get_galore_param_groups(org_model, weight_decay=0, rank=4),
